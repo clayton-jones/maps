@@ -3,6 +3,7 @@ export interface Marker {
     lat: number;
     lng: number;
   };
+  markerContent(): string;
 }
 
 export class CustomMap {
@@ -20,12 +21,20 @@ export class CustomMap {
   }
 
   addMarker(marker: Marker): void {
-    new google.maps.Marker({
+    const mark = new google.maps.Marker({
       map: this.googleMap,
       position: {
         lat: marker.location.lat,
         lng: marker.location.lng,
       },
+    });
+
+    mark.addListener('click', () => {
+      const infoWindow = new google.maps.InfoWindow({
+        content: marker.markerContent(),
+      });
+
+      infoWindow.open(this.googleMap, mark);
     });
   }
 }
